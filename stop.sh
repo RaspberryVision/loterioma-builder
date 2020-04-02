@@ -25,10 +25,17 @@ cd loterioma-lobby
 docker-compose down
 cd ..
 
+echo "Stop Loterioma Manager"
+cd loterioma-manager
+docker-compose down
+cd ..
+
 echo "Stop Loterioma Engineer"
 cd loterioma-engineer
 docker-compose down
 cd ..
+
+### OPTIONAL COMPONENTS
 
 echo "Stop Loterioma Game Debugger"
 cd loterioma-game-debugger

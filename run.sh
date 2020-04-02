@@ -40,6 +40,12 @@ docker-compose down
 docker-compose up -d --build
 cd ..
 
+echo "Run Loterioma Manager"
+cd loterioma-manager
+docker-compose down
+docker-compose up -d --build
+cd ..
+
 echo "Run Loterioma Lobby"
 cd loterioma-lobby
 docker-compose down
@@ -140,6 +146,16 @@ then
     exit 0
 else
     echo "** SUCCESS ** | Loterioma Lobby."
+fi
+
+echo "Ping Loterioma Manager (http://localhost:9910)"
+nc -zvw3 localhost 9910
+if [ $? -ne 0 ]
+then
+    echo "** ERROR ** | Loterioma Manager status failed."
+    exit 0
+else
+    echo "** SUCCESS ** | Loterioma Manager."
 fi
 
 echo "Ping Loterioma Game Debugger (http://localhost:9903)"
