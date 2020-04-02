@@ -16,6 +16,12 @@ docker-compose down
 docker-compose up -d --build
 cd ..
 
+echo "Run Loterioma DataStore"
+cd loterioma-datastore
+docker-compose down
+docker-compose up -d --build
+cd ..
+
 echo "Run Loterioma Core"
 cd loterioma-core
 docker-compose down
@@ -34,6 +40,14 @@ docker-compose down
 docker-compose up -d --build
 cd ..
 
+echo "Run Loterioma Lobby"
+cd loterioma-lobby
+docker-compose down
+docker-compose up -d --build
+cd ..
+
+# OPTIONAL CONTAINERS
+
 echo "Run Loterioma Game Debugger"
 cd loterioma-game-debugger
 docker-compose down
@@ -46,11 +60,27 @@ docker-compose down
 docker-compose up -d --build
 cd ..
 
+echo "Run Loterioma Game Certifier"
+cd loterioma-game-certifier
+docker-compose down
+docker-compose up -d --build
+cd ..
+
 echo "All components starts, waiting 30 seconds..."
 sleep 30
 
 echo "Checking components status"
 echo "**************************"
+
+echo "Ping Loterioma DataStore (http://localhost:80)"
+nc -zvw3 localhost 80
+if [ $? -ne 0 ]
+then
+  echo "** ERROR ** | Loterioma DataStore status failed."
+  exit 0
+else
+  echo "** SUCCESS ** | Loterioma DataStore."
+fi
 
 echo "Ping Loterioma Builder (http://localhost:9904)"
 nc -zvw3 localhost 9904
@@ -102,6 +132,16 @@ else
     echo "** SUCCESS ** | Loterioma RNG."			
 fi
 
+echo "Ping Loterioma Lobby (http://localhost:9909)"
+nc -zvw3 localhost 9909
+if [ $? -ne 0 ]
+then
+    echo "** ERROR ** | Loterioma Lobby status failed."
+    exit 0
+else
+    echo "** SUCCESS ** | Loterioma Lobby."
+fi
+
 echo "Ping Loterioma Game Debugger (http://localhost:9903)"
 nc -zvw3 localhost 9903
 if [ $? -ne 0 ]
@@ -121,6 +161,16 @@ then
 else
     echo "** SUCCESS ** | Loterioma Client Basic."			
 fi
+
+#echo "Ping Loterioma Game Certifier (http://localhost:9908)"
+#nc -zvw3 localhost 9908
+#if [ $? -ne 0 ]
+#then
+#    echo "** ERROR ** | Loterioma Game Certifier status failed."
+#    exit 0
+#else
+#    echo "** SUCCESS ** | Loterioma Game Certifier."
+#fi
 
 echo "Networks works properly! SUCCESS"
 
